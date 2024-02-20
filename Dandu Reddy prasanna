@@ -1,0 +1,163 @@
+import numpy as np
+import matplotlib.pyplot as plt
+x=np.array([0,1,2,3,4,5,6,7,8,9,10])
+y=np.array([10,9,8,7,6,5,4,3,2,1,0])
+m=(((np.mean(x)*np.mean(y))-np.mean(x*y))/((np.mean(x)*np.mean(x)-np.mean(x*x))))
+b=np.mean(y)-m*np.mean(x)
+plt.plot(x,y,'o')
+plt.plot(x,m*x+b)
+plt.show()
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+
+ProbAbsentFriday=3.0
+ProbFriday=0.2
+#p(Absent/Friday)=p(Friday/Absent)p(Absent)/p(Friday)
+#np(Friday|Absent)=p(Friday)
+bayesResult=(ProbAbsentFriday/ProbFriday)
+print(bayesResult*100)
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<naive baiyes through english test>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score,confusion_matrix,precision_score,recall_score
+msg=pd.read_csv('naivetext1.csv',names=['message','label'])
+print("Total instances of Datasets:",msg.shape[0])
+msg['labelnum']=msg.label.map({'pos':1,'neg':0})
+X=msg.message
+y=msg.labelnum
+Xtrain,Xtest,ytrain,ytest=train_test_split(X,y)
+count_v=CountVectorizer()
+Xtrain_dm=count_v.fit_transform(Xtrain)
+Xtest_dm=count_v.transform(Xtest)
+df=pd.DataFrame(Xtrain_dm.toarray(),columns=count_v.get_feature_names_out())
+clf=MultinomialNB()
+clf.fit(Xtrain_dm,ytrain)
+pred=clf.predict(Xtest_dm)
+print('Accuracy Metrics')
+print('accuracy score',accuracy_score(ytest,pred))
+print('precision score',precision_score(ytest,pred))
+print('recall score',recall_score(ytest,pred))
+print('confusion score',confusion_matrix(ytest,pred))
+
+<<<<<<<<<<<<<<<<<<<<<Backpropagation>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+import sys
+import matplotlib
+%matplotlib inline
+
+import pandas
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
+
+df=pandas.read_csv('data.csv')
+
+d={'Uk':0,'USA':1,'N':2}
+df['Nationality']=df['Nationality'].map(d)
+d={'YES':1,'NO':0}
+df['Go']=df['Go'].map(d)
+
+features=['Age','Experience','Rank','Nationality']
+
+X=df[features]
+y=df['Go']
+
+dtree = DecisionTreeClassifier()
+dtree = dtree.fit(X,y)
+fig=plt.figure(figsize=(15,20))
+fig=tree.plot_tree(dtree,feature_names=features)
+
+plt.savefig("dtree.png")
+sys.stdout.flush()
+
+import numpy as np
+X=np.array(([2,9],[1,5],[3,6]),dtype=float)
+y=np.array(([92],[86],[89]),dtype=float)
+X=X/np.amax(X,axis=0)
+y=y/100
+
+#sigmoid function
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+#derivative sigmoid function
+def derivatives_sigmoid(x):
+    return x*(1-x)
+
+#Initializations
+epoch=5000
+lr=0.2
+inputlayer_neurons=2
+hiddenlayer_neurons=3
+outputlayer_neurons=1
+
+#wait and bias
+wh=np.random.uniform(size=(inputlayer_neurons,hiddenlayer_neurons))
+bh=np.random.uniform(size=(1,hiddenlayer_neurons))
+wout=np.random.uniform(size=(hiddenlayer_neurons,outputlayer_neurons))
+bout=np.random.uniform(size=(1,outputlayer_neurons))
+for i in range(epoch):
+
+#forward bias
+    hinp1=np.dot(X,wh)
+    hinp=hinp1+bh
+    hlayer_act=sigmoid(hinp)
+
+    outinp1=np.dot(hlayer_act,wout)
+    outinp=outinp1+bout
+    output=sigmoid(outinp)
+
+#backward propagation
+EO=y-output
+outgrad=derivatives_sigmoid(output)
+d_output=EO*outgrad
+
+EH=d_output.dot(wout.T)
+hiddengrad=derivatives_sigmoid(hlayer_act)
+d_hiddenlayer=EH*hiddengrad
+
+wout+=hlayer_act.T.dot(d_output)*lr
+wh+=X.T.dot(d_hiddenlayer)*lr
+
+print("Input: \n",str(X))
+print("ACtual output: \n",str(y))
+print("predicted output: \n",output)
+
+
+>>>>>>>>>>>>>>>>Expectation maximization<<<<<<<<<<<<<<<<<<<<<<<<<<
+import numpy as np
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+from sklearn.mixture import GaussianMixture
+import pandas as pd
+
+X=pd.read_csv('"C:\Users\REDDY PRASANNA\OneDrive\Desktop\driver_data.csv.xlsx"'"C:\Users\REDDY PRASANNA\OneDrive\Desktop\driver_data.csv.xlsx")
+
+x1 = X['Distance_feature'].values
+x2 = X['Speeding_feature'].values
+X=np.array(list(zip(x1,x2))).reshape(len(x1),2)
+
+plt.plot()
+plt.xlim([0,100])
+plt.ylim([0,50])
+plt.title('Dataset')
+plt.scatter(x1,x2)
+plt.show()
+
+gmm=GaussianMixture(n_components=3)
+gmm.fit(X)
+em_predictions=gmm.predict(X)
+print("Expectation-Maximization")
+print(em_predictions)
+print("mean:\n", gmm.means_)
+print("\n")
+print("covariance:\n",gmm.covariances_)
+print(X)
+plt.title('Expectation Maximization')
+plt.scatter(x[ :0],x[ :1],c=em_predictions,s=50)
+plt.show()
+
+
